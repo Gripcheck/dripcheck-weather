@@ -6,58 +6,130 @@
 
 body {
   font-family:
+    Inter,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Open Sans",
-    "Helvetica Neue",
     sans-serif;
-  background-color: linear-gradient(135deg, #0f172a, #1e293b);
   color: white;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  transition: background 0.6s ease;
+  padding: 20px;
 }
 
 .app {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 40px;
-  border-radius: 10px;
+  width: 100%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   text-align: center;
-  width: 350px;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 24px;
 }
 
 .search {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-input {
-  padding: 10px;
-  width: 70%;
+.search input {
+  width: 100%;
+  padding: 14px 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 14px;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a;
+}
+
+.search input::placeholder {
+  color: #64748b;
 }
 
 button {
-  padding: 10px 5px;
+  padding: 14px 16px;
   border: none;
-  background: #38bdf8;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
   color: white;
-  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.3);
 }
 
 button:hover {
-  background: #0284c7;
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 #weatherResult {
-  margin-top: 30px;
-  font-size: 18px;
+  margin-top: 24px;
+}
+
+.weather-card {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.weather-card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.weather-card img {
+  width: 100px;
+  height: 100px;
+  margin: 6px 0 10px;
+}
+
+.weather-card p {
+  font-size: 1rem;
+  margin: 8px 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 500px) {
+  .app {
+    padding: 24px 18px;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  .weather-card h2 {
+    font-size: 1.35rem;
+  }
 }
