@@ -245,3 +245,77 @@ button:active {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.weather-clear {
+  background: linear-gradient(-45deg, #4facfe, #00f2fe, #38bdf8, #0ea5e9);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+}
+
+.weather-clouds {
+  background: linear-gradient(-45deg, #bdc3c7, #2c3e50, #9ca3af, #4b5563);
+  background-size: 400% 400%;
+  animation: gradientMove 14s ease infinite;
+}
+
+.weather-rain {
+  background: linear-gradient(-45deg, #4b6cb7, #182848, #1e3a8a, #1e40af);
+  background-size: 400% 400%;
+  animation: gradientMove 16s ease infinite;
+}
+
+.weather-snow {
+  background: linear-gradient(-45deg, #e6dada, #274046, #cbd5f5, #94a3b8);
+  background-size: 400% 400%;
+  animation: gradientMove 18s ease infinite;
+}
+
+.weather-storm {
+  background: linear-gradient(-45deg, #232526, #414345, #111827, #374151);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+}
+
+/* animation */
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.hero-temp {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 8px 0 4px;
+}
+
+.hero-condition {
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 8px;
+}
+
+.weather-details {
+  margin-top: 8px;
+}
+
+.weather-details p {
+  margin: 8px 0;
+}
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

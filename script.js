@@ -4,8 +4,7 @@ const cityInput = document.getElementById("cityInput");
 const stateInput = document.getElementById("stateInput");
 const button = document.getElementById("searchBtn");
 const text = document.getElementById("weatherResult");
-
-const apiKey = "20494173ef27fe0a59000a90ec222bf8";
+const locationBtn = document.getElementById("locationBtn");
 
 stateInput.addEventListener("input", function () {
   stateInput.value = stateInput.value.toUpperCase().slice(0, 2);
@@ -19,24 +18,24 @@ function showLoading(message) {
 }
 
 function updateBackground(weatherType) {
+  document.body.classList.remove(
+    "weather-clear",
+    "weather-clouds",
+    "weather-rain",
+    "weather-snow",
+    "weather-storm",
+  );
+
   if (weatherType === "Clear") {
-    document.body.style.background =
-      "linear-gradient(135deg, #4facfe, #00f2fe)";
+    document.body.classList.add("weather-clear");
   } else if (weatherType === "Clouds") {
-    document.body.style.background =
-      "linear-gradient(135deg, #bdc3c7, #2c3e50)";
+    document.body.classList.add("weather-clouds");
   } else if (weatherType === "Rain" || weatherType === "Drizzle") {
-    document.body.style.background =
-      "linear-gradient(135deg, #4b6cb7, #182848)";
+    document.body.classList.add("weather-rain");
   } else if (weatherType === "Snow") {
-    document.body.style.background =
-      "linear-gradient(135deg, #e6dada, #274046)";
+    document.body.classList.add("weather-snow");
   } else if (weatherType === "Thunderstorm") {
-    document.body.style.background =
-      "linear-gradient(135deg, #232526, #414345)";
-  } else {
-    document.body.style.background =
-      "linear-gradient(135deg, #0f172a, #1e293b)";
+    document.body.classList.add("weather-storm");
   }
 }
 
@@ -50,12 +49,18 @@ function displayWeather(data, stateCode = "", forecastHtml = "") {
   text.innerHTML = `
     <div class="weather-card">
       <h2>${data.name}${stateCode ? `, ${stateCode}` : ""}</h2>
+
+      <p class="hero-temp">${Math.round(data.main.temp)}°F</p>
+      <p class="hero-condition">${data.weather[0].description}</p>
+
       <img src="${iconUrl}" alt="${data.weather[0].description}">
-      <p><strong>Temperature:</strong> ${Math.round(data.main.temp)}°F</p>
-      <p><strong>Feels Like:</strong> ${Math.round(data.main.feels_like)}°F</p>
-      <p><strong>Condition:</strong> ${data.weather[0].description}</p>
-      <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
-      <p><strong>Wind:</strong> ${Math.round(data.wind.speed)} mph</p>
+
+      <div class="weather-details">
+        <p><strong>Feels Like:</strong> ${Math.round(data.main.feels_like)}°F</p>
+        <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+        <p><strong>Wind:</strong> ${Math.round(data.wind.speed)} mph</p>
+      </div>
+
       ${forecastHtml}
     </div>
   `;
@@ -75,12 +80,12 @@ function buildForecastHTML(forecastData) {
       const icon = `https://openweathermap.org/img/wn/${day.weather[0].icon}.png`;
 
       return `
-      <div class="forecast-day">
-        <p class="forecast-day-name">${dayName}</p>
-        <img src="${icon}" alt="${day.weather[0].description}">
-        <p>${Math.round(day.main.temp)}°F</p>
-      </div>
-    `;
+        <div class="forecast-day">
+          <p class="forecast-day-name">${dayName}</p>
+          <img src="${icon}" alt="${day.weather[0].description}">
+          <p>${Math.round(day.main.temp)}°F</p>
+        </div>
+      `;
     })
     .join("");
 
@@ -95,7 +100,7 @@ function buildForecastHTML(forecastData) {
 }
 
 async function getForecastByCity(city, stateCode) {
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${stateCode},US&appid=${apiKey}&units=imperial`;
+  const forecastUrl = `/.netlify/functions/weather?city=${encodeURIComponent(city)}&state=${encodeURIComponent(stateCode)}&type=forecast`;
 
   const response = await fetch(forecastUrl);
   const data = await response.json();
@@ -108,7 +113,7 @@ async function getForecastByCity(city, stateCode) {
 }
 
 async function getForecastByCoords(lat, lon) {
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
+  const forecastUrl = `/.netlify/functions/weather?lat=${lat}&lon=${lon}&type=forecast`;
 
   const response = await fetch(forecastUrl);
   const data = await response.json();
@@ -134,7 +139,7 @@ async function getWeatherByCity() {
 
   showLoading(`Loading weather for ${city}, ${stateCode}...`);
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${stateCode},US&appid=${apiKey}&units=imperial`;
+  const url = `/.netlify/functions/weather?city=${encodeURIComponent(city)}&state=${encodeURIComponent(stateCode)}&type=weather`;
 
   try {
     const response = await fetch(url);
@@ -156,7 +161,7 @@ async function getWeatherByCity() {
 async function getWeatherByCoords(lat, lon) {
   showLoading("Getting weather for your location...");
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
+  const url = `/.netlify/functions/weather?lat=${lat}&lon=${lon}&type=weather`;
 
   try {
     const response = await fetch(url);
@@ -176,6 +181,25 @@ async function getWeatherByCoords(lat, lon) {
 }
 
 button.addEventListener("click", getWeatherByCity);
+
+locationBtn.addEventListener("click", function () {
+  if (navigator.geolocation) {
+    showLoading("Getting weather for your location...");
+
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        getWeatherByCoords(lat, lon);
+      },
+      function () {
+        text.innerHTML = `<p>Unable to access your location.</p>`;
+      },
+    );
+  } else {
+    text.innerHTML = `<p>Geolocation is not supported by this browser.</p>`;
+  }
+});
 
 cityInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
